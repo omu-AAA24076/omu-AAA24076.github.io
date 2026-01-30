@@ -16,6 +16,16 @@
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""
         ></script>
+         <!-- Leaflet.markerclusterを読み込み -->
+         <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"
+        />
     </head>
     <body>
         <!-- 地図を表示するdiv要素を宣言 -->
@@ -79,14 +89,13 @@
             '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
             );    
 
-            fetch('./27000_1.geojson') // 全国分の学校データ（5万件超）のGeoJSONを非同期読み込み
+            fetch('./27000_1.geojson') 
             .then((res) => res.json())
             .then((json) => {
         // クラスタリングレイヤーを作成し地図に追加
             const markers = L.markerClusterGroup()
                  .bindPopup(
-                    (layer) => layer.feature.properties.[施設・場所名], // ポップアップで学校名を表示
-                )
+                    (layer) => layer.feature.properties.施設・場所名)
                 .addTo(map);
             L.geoJSON(json).addTo(markers); // クラスタリングレイヤーにGeoJSONデータをセット
         });
