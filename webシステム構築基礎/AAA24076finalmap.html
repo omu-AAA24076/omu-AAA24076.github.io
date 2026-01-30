@@ -68,40 +68,34 @@
             // スケールバーを追加
             L.control.scale().addTo(map);
 
-            
-            // 出典表示（必要に応じて避難所データのページに変更してOK）
-            map.attributionControl.addAttribution(
-            '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
-            );
+            fetch('./27000_1.geojson')
+              .then((res) => res.json())
+              .then((json) => {
 
-           
-
-           // 避難所データの出典表示
-            map.attributionControl.addAttribution(
-            '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
-            );    
-
-           fetch('./27000_1.geojson')
-          .then((res) => res.json())
-          .then((json) => {
-
-             const markers = L.markerClusterGroup();
+            const markers = L.markerClusterGroup();
 
             const geojsonLayer = L.geoJSON(json, {
-              pointToLayer: function (feature, latlng) {
-                return L.marker(latlng);
-              },
-                onEachFeature: function (feature, layer) {
-                layer.bindPopup(feature.properties.施設・場所名);
-              }
-            });
 
-            markers.addLayer(geojsonLayer);
-            map.addLayer(markers);
+          filter: function(feature) {
+            return feature.geometry && feature.geometry.type === "Point";
+          },
 
-            LayerControl.addOverlay(markers, "避難所（クラスタ）");
-            });
+          pointToLayer: function (feature, latlng) {
+            return L.marker(latlng);
+          },
 
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties["施設・場所名"]);
+          }
+        });
+
+        markers.addLayer(geojsonLayer);
+        map.addLayer(markers);
+        LayerControl.addOverlay(markers, "避難所（クラスタ）");
+        });
+           
+
+           
 
      
 
