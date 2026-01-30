@@ -63,7 +63,20 @@
             nakamozu_marker.bindPopup('堺市立中百舌鳥小学校'); // ポップアップを紐付け　避難所
             map.addLayer(nakamozu_marker); // ピンを地図上に追加
 
-            
+            // 出典表示（必要に応じて避難所データのページに変更してOK）
+            map.attributionControl.addAttribution(
+            '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
+            );
+
+            // 避難所GeoJSONを読み込み
+            fetch('./27000_1.geojson')
+              .then((res) => res.json())
+              .then((json) => {
+          // GeoJSONレイヤーを作成して地図に追加
+             L.geoJSON(json)
+              .bindPopup((layer) => layer.feature.properties.施設・場所名) 
+              .addTo(map);
+            });
 
            
 
