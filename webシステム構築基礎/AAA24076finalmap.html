@@ -79,24 +79,17 @@
             '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
             );    
 
-
-            // 避難所GeoJSONを読み込み
-            fetch('./27000_1.geojson')
-              .then((res) => res.json())
-              .then((json) => {
-
-            // クラスタリングレイヤーを作成
-            const markers = L.markerClusterGroup().addTo(map);
-
-            // GeoJSONをクラスターレイヤーに追加
-            L.geoJSON(json, {
-              onEachFeature: function (feature, layer) {
-            // ポップアップに避難所名（場所・施設名）を表示
-               layer.bindPopup(feature.properties.場所・施設名);
-          }
-         }).addTo(markers);
-
-      });
+        fetch('./27000_1.geojson') // 全国分の学校データ（5万件超）のGeoJSONを非同期読み込み
+        .then((res) => res.json())
+        .then((json) => {
+          // クラスタリングレイヤーを作成し地図に追加
+            const markers = L.markerClusterGroup()
+                .bindPopup(
+                    (layer) => layer.feature.properties.施設・場所名, 
+                )
+                .addTo(map);
+              L.geoJSON(json).addTo(markers); // クラスタリングレイヤーにGeoJSONデータをセット
+        });
 
             // ラインレイヤーを作成
             fetch("./line.geojson") // ルートデータの非同期読み込み
