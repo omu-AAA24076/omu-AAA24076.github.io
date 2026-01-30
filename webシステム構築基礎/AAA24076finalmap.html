@@ -58,11 +58,7 @@
             // スケールバーを追加
             L.control.scale().addTo(map);
 
-            // ピン定義
-            const nakamozu_marker = L.marker([34.550767293195534, 135.50705618650687]); // ピン＝Markerを初期化
-            nakamozu_marker.bindPopup('堺市立中百舌鳥小学校'); // ポップアップを紐付け　避難所
-            map.addLayer(nakamozu_marker); // ピンを地図上に追加
-
+            
             // 出典表示（必要に応じて避難所データのページに変更してOK）
             map.attributionControl.addAttribution(
             '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
@@ -78,7 +74,26 @@
               .addTo(map);
             });
 
-           
+           // 避難所データの出典表示
+            map.attributionControl.addAttribution(
+            '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
+            );    
+
+            // 避難所GeoJSONを読み込み
+            fetch('./27000_1.geojson')
+              .then((res) => res.json())
+              .then((json) => {
+            // クラスタリングレイヤーを作成
+            const markers = L.markerClusterGroup().addTo(map);
+
+            // GeoJSONをクラスターレイヤーに追加
+            L.geoJSON(json, {
+              onEachFeature: function (feature, layer) {
+            // ポップアップに避難所名を表示
+            layer.bindPopup(feature.properties.施設・場所名); 
+              }
+            }).addTo(markers);
+            });
 
 
             // ラインレイヤーを作成
