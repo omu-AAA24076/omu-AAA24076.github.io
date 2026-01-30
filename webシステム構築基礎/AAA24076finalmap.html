@@ -89,17 +89,26 @@
             '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
             );    
 
-            fetch('./27000_1.geojson') 
-            .then((res) => res.json())
-            .then((json) => {
-        // クラスタリングレイヤーを作成し地図に追加
-            const markers = L.markerClusterGroup()
-                 .bindPopup(
-                    (layer) => layer.feature.properties.施設・場所名)
-                .addTo(map);
-            L.geoJSON(json).addTo(markers); // クラスタリングレイヤーにGeoJSONデータをセット
-        });
+           fetch('./27000_1.geojson')
+          .then((res) => res.json())
+          .then((json) => {
 
+             const markers = L.markerClusterGroup();
+
+            const geojsonLayer = L.geoJSON(json, {
+              pointToLayer: function (feature, latlng) {
+                return L.marker(latlng);
+              },
+                onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.施設・場所名);
+              }
+            });
+
+            markers.addLayer(geojsonLayer);
+            map.addLayer(markers);
+
+            LayerControl.addOverlay(markers, "避難所（クラスタ）");
+            });
 
 
      
@@ -133,7 +142,7 @@
             });
 
  
-                // ローカルPC上のOSRMサーバで杉本キャンパスからなかもずキャンパスまでのルートを検索するURL
+                // ローカルPC上のルートを検索するURL
              const url = 'https://routing.openstreetmap.de/routed-car/route/v1/driving/135.50705618650687,34.550767293195534;135.50611639260254,34.57080159242134?geometries=geojson&overview=full'
 
             async function addRouteLayer(){
