@@ -74,15 +74,7 @@
             '<a href="https://nlftp.mlit.go.jp/">国土数値情報 - 避難施設データ</a>',
             );
 
-            // 避難所GeoJSONを読み込み
-            fetch('./27000_1.geojson')
-              .then((res) => res.json())
-              .then((json) => {
-          // GeoJSONレイヤーを作成して地図に追加
-             L.geoJSON(json)
-              .bindPopup((layer) => layer.feature.properties.施設・場所名) 
-              .addTo(map);
-            });
+           
 
            // 避難所データの出典表示
             map.attributionControl.addAttribution(
